@@ -125,7 +125,12 @@ st.set_page_config(
     layout="centered",
     page_title="Understanding the Closure of CPF Special Account"
 )
-resume=st.file_uploader('upload resume here')
+resume=st.file_uploader('''Read me.
+                        This app will take in your resume, and a job posting link.
+                        
+                        once it has both, it will take about 1 minute to generate a customised resume downloadable in word format.
+                        
+                        you will see the words "Download Analysis as Word Document" Once complete"''')
 #define CV & joblink to avoid error so that there is no error
 
 cv_content=None
