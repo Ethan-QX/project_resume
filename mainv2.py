@@ -1,6 +1,9 @@
 # Common imports
 import sqlite3
 # import pysqlite3
+import numpy as np
+import PyPDF2
+from PyPDF2 import PdfReader
 import sys
 # sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import os
@@ -19,6 +22,7 @@ from helper_functions.utility import check_password
 import os
 from langchain_openai import ChatOpenAI
 from langchain_openai import OpenAIEmbeddings
+
 
 
 #setup for nativeRag
@@ -107,41 +111,47 @@ def count_tokens_from_message_rough(messages):
 
 
 
-file_tool = FileReadTool(file_path='fake-cv.md')
 
-# cv_content = file_tool.read()
-# cv_content
+#Streamlit
 
-# Step 2: Read the CV content
-with open("fake-cv.md", "r") as file:
-    cv_content = file.read()
-cv_content
+# Check if the password is correct.  
+if not check_password():  
+    st.stop()
 
+#Streamlit section
+# region <--------- Streamlit App Configuration --------->
+st.set_page_config(
+    layout="centered",
+    page_title="Understanding the Closure of CPF Special Account"
+)
+resume=st.file_uploader('upload resume here')
+#define CV & joblink to avoid error so that there is no error
 
-# %pip install PyPDF2
-import PyPDF2
+cv_content=None
+joblink=None
+# Check if a file was uploaded
+if resume is not None:
+    # Display the file details
+    st.write("Uploaded file:", resume.name)
 
-# Specify the path to your PDF file
-pdf_path = r'C:\Users\QX\Downloads\Goh Qi Xiang.pdf'  # Replace with your file path
-
-# Open the PDF file
-with open(pdf_path, 'rb') as file:
-    reader = PyPDF2.PdfReader(file)  # Ensure this is within the same context
+    # Use PdfReader to read the file content
+    pdf_reader = PdfReader(resume)
+    cv_content = ""
 
     # Extract text from each page
-    pdf_content = []
-    for page in reader.pages:
-        text = page.extract_text()  # Extract text from the page
-        if text:  # Check if the text is not None
-            pdf_content.append(text)
+    for page in pdf_reader.pages:
+        cv_content += page.extract_text()
 
-# Join all pages into a single string
-cv_content = "\n".join(pdf_content)
-
-# Print the extracted text
-print(cv_content)
+    # Display the extracted content
+    st.write("Resume Updated in correct Format")
+    
+else:
+    st.write("Please upload your resume in PDF format.")
 
 
+
+
+joblink=st.text_input('input job posting URL', placeholder="https://www.mycareersfuture.gov.sg/job/information-technology/data-scientist-cpo-03dba75ab1fec49a3aac63d2c676949a?source=MCF&event=Search" )
 
 
 
@@ -192,7 +202,7 @@ resume_strategist = Agent(
 
 extract_requirements = Task(
     description="""\
-    Analyze the job posting URL provided (`{job_posting_url}`) to extract key skills, experiences, 
+    Analyze the job posting URL provided (`{joblink}`) to extract key skills, experiences, 
     and qualifications required. Use the tools to gather content and identify and categorize the requirements.""",
 
     expected_output="""\
@@ -229,14 +239,33 @@ crew = Crew(
     verbose=True
 )
 
-job_application_inputs = {
-    'job_posting_url': 
-    
-    'https://www.mycareersfuture.gov.sg/job/information-technology/data-scientist-cpo-03dba75ab1fec49a3aac63d2c676949a?source=MCF&event=Search'
-    # 'https://www.mycareersfuture.gov.sg/job/information-technology/full-stack-developer-ntt-data-singapore-12059bf21549d1794e3535de365d0a77'
-    ,'cv_content':cv_content
-}
 
 
 ### this execution will take a few minutes to run
-result = crew.kickoff(inputs=job_application_inputs)
+# 
+
+
+# After running crew.kickoff
+if cv_content and joblink:
+    job_application_inputs = {
+        'joblink': joblink,
+        'cv_content': cv_content
+    }
+    result = crew.kickoff(inputs=job_application_inputs)
+    
+    # Display the result in Streamlit
+    st.write(result)
+
+    # Save the result as a Word file
+    word_file = save_to_word(result, "Job_Application_Analysis.docx")
+    
+    # Provide a download link for the Word file
+    with open(word_file, "rb") as file:
+        st.download_button(
+            label="Download Analysis as Word Document",
+            data=file,
+            file_name="Job_Application_Analysis.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
+else:
+    st.write("Please upload a resume and enter the job link.")

@@ -1,7 +1,7 @@
 pysqlite3-binary
 
 
-pypdf2
+PyPDF2
 
 textloader
 
