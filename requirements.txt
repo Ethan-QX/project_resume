@@ -1,6 +1,6 @@
 pysqlite3-binary
-
-
+python-docx
+docx
 PyPDF2
 
 textloader

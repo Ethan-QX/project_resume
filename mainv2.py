@@ -1,11 +1,12 @@
 # Common imports
 import sqlite3
-# import pysqlite3
+import pysqlite3
+from docx import Document
 import numpy as np
 import PyPDF2
 from PyPDF2 import PdfReader
 import sys
-# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import os
 import openai
 from openai import OpenAI
@@ -243,7 +244,17 @@ crew = Crew(
 
 ### this execution will take a few minutes to run
 # 
-
+def save_to_word(content, filename="Job_Application_Analysis.docx"):
+    doc = Document()
+    doc.add_heading("Job Application Analysis", 0)
+    
+    # Add content (assuming content is a string)
+    doc.add_paragraph(str(content))
+    
+    # Save the document
+    doc.save(filename)
+    
+    return filename
 
 # After running crew.kickoff
 if cv_content and joblink:
@@ -254,12 +265,12 @@ if cv_content and joblink:
     result = crew.kickoff(inputs=job_application_inputs)
     
     # Display the result in Streamlit
-    st.write(result)
+    # st.write(result)
 
     # Save the result as a Word file
     word_file = save_to_word(result, "Job_Application_Analysis.docx")
     
-    # Provide a download link for the Word file
+     # Provide a download link for the Word file
     with open(word_file, "rb") as file:
         st.download_button(
             label="Download Analysis as Word Document",
