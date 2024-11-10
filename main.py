@@ -282,7 +282,7 @@ if cv_content and joblink:
     result = crew.kickoff(inputs=job_application_inputs)
     
     # Display the result in Streamlit
-    st.write(results)
+    st.write(result)
 
     # Save the result as a Word file
     word_file = save_to_word(result, "Job_Application_Analysis.docx")
@@ -297,3 +297,5 @@ if cv_content and joblink:
         )
 else:
     st.write("Please upload a resume and enter the job link.")
+
+
