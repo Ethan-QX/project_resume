@@ -136,9 +136,7 @@ Please upload your resume using the file uploader below:
 
 resume=st.file_uploader('''upload resume in pdf format here''')
 #define CV & joblink to avoid error so that there is no error
-st.sidebar()
 
-@st.cache
 cv_content=None
 joblink=None
 # Check if a file was uploaded
