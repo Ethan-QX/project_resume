@@ -216,6 +216,18 @@ resume_strategist = Agent(
 # You can use this cell to create tools or functions that you will use in the main code
 # Hint: You may want to use `FileReadTool` tool which can be used by agent/task to read the resume file
 
+validate_job_link = Task(
+    description="""\
+    Verify if the provided URL (`{joblink}`) contains a job posting by checking for key job-related terms 
+    like 'Job Description', 'Responsibilities', 'Qualifications', or 'Requirements'. Return a confirmation if 
+    it is a job posting, otherwise, return a message that the link does not contain a job posting.""",
+    
+    expected_output="""\
+    A confirmation of whether the URL is a job posting or not.""",
+    
+    agent=analyst
+)
+
 extract_requirements = Task(
     description="""\
     Analyze the job posting URL provided (`{joblink}`) to extract key skills, experiences, 
@@ -225,6 +237,7 @@ extract_requirements = Task(
     A structured list of job requirements, including necessary skills, qualifications, and experiences.""",
 
     agent=analyst,
+    dependencies=[validate_job_link]
 )
 
 compile_profile = Task(
@@ -249,9 +262,14 @@ align_with_requirement = Task(
 
     agent=resume_strategist,
 )
+
+
+
+
+
 crew = Crew(
     agents=[profiler,analyst, resume_strategist],
-    tasks=[extract_requirements, compile_profile,align_with_requirement],
+    tasks=[validate_job_link,extract_requirements, compile_profile,align_with_requirement],
     verbose=True
 )
 
