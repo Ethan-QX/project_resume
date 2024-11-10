@@ -245,7 +245,7 @@ align_with_requirement = Task(
     work experience, skills, and education. All to better reflect the candidate's abilities and how it matches the job posting.""",
 
     expected_output="""\
-    An updated resume beatifully formatting in microsoft word that effectively highlights the candidate's qualifications and experiences relevant to the job.""",
+    An updated resume with beatifully formatting in microsoft word that effectively highlights the candidate's qualifications and experiences relevant to the job.""",
 
     agent=resume_strategist,
 )
