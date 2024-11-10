@@ -136,7 +136,9 @@ Please upload your resume using the file uploader below:
 
 resume=st.file_uploader('''upload resume in pdf format here''')
 #define CV & joblink to avoid error so that there is no error
+st.sidebar()
 
+@st.cache
 cv_content=None
 joblink=None
 # Check if a file was uploaded
@@ -239,7 +241,7 @@ align_with_requirement = Task(
     work experience, skills, and education. All to better reflect the candidate's abilities and how it matches the job posting.""",
 
     expected_output="""\
-    An updated resume that effectively highlights the candidate's qualifications and experiences relevant to the job.""",
+    An updated resume beatifully formatting in microsoft word that effectively highlights the candidate's qualifications and experiences relevant to the job.""",
 
     agent=resume_strategist,
 )
@@ -274,7 +276,7 @@ if cv_content and joblink:
     result = crew.kickoff(inputs=job_application_inputs)
     
     # Display the result in Streamlit
-    # st.write(result)
+    st.write(result)
 
     # Save the result as a Word file
     word_file = save_to_word(result, "Job_Application_Analysis.docx")
