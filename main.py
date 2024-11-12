@@ -5,6 +5,9 @@ from docx import Document
 import numpy as np
 import PyPDF2
 from PyPDF2 import PdfReader
+import pysqlite3
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import os
 import openai
@@ -48,10 +51,7 @@ if load_dotenv('.env'):
    OPENAI_KEY = os.getenv('OPENAI_API_KEY')
 else:
    OPENAI_KEY = st.secrets['OPENAI_API_KEY']
-   import pysqlite3
-   import sys
-   sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
+   
 client = OpenAI(api_key=OPENAI_KEY)
 
 
