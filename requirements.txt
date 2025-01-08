@@ -21,6 +21,8 @@ langchain-chroma
 
 crewai
 
+crewai_tools
+
 python-dotenv
 
 tiktoken
