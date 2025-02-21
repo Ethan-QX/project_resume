@@ -4,7 +4,7 @@ docx
 PyPDF2
 google-generativeai
 textloader
-
+crewai-tools
 openai
 
 chromadb
