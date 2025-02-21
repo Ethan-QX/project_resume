@@ -52,14 +52,17 @@ llm = ChatOpenAI(model=model_gem, temperature=0, seed=42)
 
 
 
+# Load environment variables from .env if running locally
 if load_dotenv('.env'):
-   # for local development
-   OPENAI_KEY = os.getenv('OPENAI_API_KEY')
+    OPENAI_KEY = os.getenv('OPENAI_API_KEY')
+    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 else:
-   OPENAI_KEY = st.secrets['OPENAI_API_KEY']
+    # Fetch from Streamlit Cloud secrets
+    OPENAI_KEY = st.secrets['OPENAI_API_KEY']
+    GOOGLE_API_KEY = st.secrets['GOOGLE_API_KEY']
    
 client = OpenAI(api_key=OPENAI_KEY)
-
+genai.configure(api_key=GOOGLE_API_KEY)
 
 #function for getting embeddings
 def get_embedding(input, model='text-embedding-3-small'):
